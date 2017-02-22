@@ -1,0 +1,201 @@
+<% layout('layout') -%>
+
+<div class="container">
+    <div class="row">
+        <div class="col-lg-6">
+
+            <!--shows the removed successfully message-->
+            <% if(message.length > 0) { %>
+            <div class="alert alert-success alert-dismissable">
+                <button type="button" class="close" data-dismmiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <%= message %>
+            </div>
+            <% } %>
+
+            <!--use loop to show the product information in cart-->
+            <% for(var i = 0; i < foundCart.items.length; i++) { %>
+            <div class="list-group">
+                <span class="list-group-item">
+                    <div class="row">
+
+                        <!--show product image-->
+                        <div class="col-md-3">
+                            <span><img class="product-image" src="<%= foundCart.items[i].item.image %>"/></span>
+                        </div>
+
+                        <!--show product name-->
+                        <div class="col-md-6">
+                            <p class="list-group-item-heading"><%= foundCart.items[i].item.name %></p>
+                        </div>
+
+                        <!--show profuct quantity and price-->
+                        <div class="col-md-3">
+                             <p><%= foundCart.items[i].quantity %></p>
+                             <p><%= foundCart.items[i].price %></p>
+
+                            <!--submit this remove request -->
+                            <form method="post" action="/remove">
+                                 <input type="hidden" name="item" value="<%= foundCart.items[i]._id %>">
+                                 <input type="hidden" name="price" value="<%= foundCart.items[i].price %>">
+                                 <button type="submit">Remove</button>
+                             </form>
+                        </div>
+
+                    </div>
+                </span>
+            </div>
+            <% } %>
+        </div>
+
+        <!--this is used to add some space between product information and payment information-->
+        <div class="col-md-3"></div>
+
+        <!--add the payment button and use modal to go to payment page-->
+        <div class="col-md-3">
+            <div class="list-group"></div>
+            <span class="list-group-item">
+                    <h4>Total: $<span class="totalPrice"><%= foundCart.total %></span> </h4>
+
+                    <div class="form-group">
+                        <input type="hidden" value="<%= foundCart.total %>">
+
+                        <!--set data-toggle to use a pop-out modal to go to the payment page-->
+                        <button type="submit" class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal">Pay With Stripe</button>
+                    </div>
+                </span>
+        </div>
+
+        <!--this modal shows the payment part and this code part comes from bootsnipp.com and search it as 'stripe custom payment'-->
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        <h4 class="modal-title" id="myModalLabel">Pay with Stripe</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="container">
+                            <div class="row">
+                                <!-- You can make it whatever width you want. I'm making it full width
+                                     on <= small devices and 4/12 page width on >= medium devices -->
+                                <div class="col-xs-12 col-md-4">
+
+                                    <!-- CREDIT CARD FORM STARTS HERE -->
+                                    <div class="panel panel-default credit-card-box">
+                                        <div class="panel-heading display-table">
+                                            <div class="row display-tr">
+                                                <h3 class="panel-title display-td">Payment Details</h3>
+                                                <div class="display-td">
+                                                    <img class="img-responsive pull-right"
+                                                         src="http://i76.imgup.net/accepted_c22e0.png">
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--let user to type in the card number and remember to add 'data-stripe = 'number'',otherwise the server cannot receive this card number-->
+                                        <div class="panel-body">
+                                            <form role="form" id="payment-form" method="POST" action="/payment">
+                                                <input type="hidden" name="stripeMoney" value="<%= foundCart.total %>">
+                                                <div class="row">
+                                                    <div class="col-xs-12">
+                                                        <div class="form-group">
+                                                            <label for="cardNumber">CARD NUMBER</label>
+                                                            <div class="input-group">
+                                                                <input
+                                                                        type="text"
+                                                                        size="10"
+                                                                        class="form-control"
+                                                                        data-stripe="number"
+                                                                        name="cardNumber"
+                                                                        placeholder="Valid Card Number"
+                                                                        autocomplete="cc-number"
+                                                                        required autofocus
+                                                                />
+                                                                <span class="input-group-addon"><i
+                                                                            class="fa fa-credit-card"></i></span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xs-7 col-md-7">
+                                                        <div class="form-group">
+                                                            <label for="cardExpiry"><span
+                                                                        class="hidden-xs">EXPIRATION</span><span
+                                                                        class="visible-xs-inline">EXP</span>
+                                                                DATE</label>
+                                                            <input
+                                                                    type="text"
+                                                                    size="10"
+                                                                    data-stripe="exp_month"
+                                                                    name="cardExpiry"
+                                                                    placeholder="MM"
+                                                                    autocomplete="cc-exp"
+                                                                    required
+                                                            />
+                                                            <span>/</span>
+                                                            <input
+                                                                    type="text"
+                                                                    size="10"
+                                                                    data-stripe="exp_year"
+                                                                    name="cardExpiry"
+                                                                    placeholder="YY"
+                                                                    autocomplete="cc-exp"
+                                                                    required
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <div class="col-xs-5 col-md-5 pull-right">
+                                                        <div class="form-group">
+                                                            <label for="cardCVC">CV CODE</label>
+                                                            <input
+                                                                    type="password"
+                                                                    size="10"
+                                                                    data-stripe="cvc"
+                                                                    name="cardCVC"
+                                                                    placeholder="CVC"
+                                                                    autocomplete="cc-csc"
+                                                                    required
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="col-xs-12">
+                                                        <button class="subscribe btn btn-success btn-lg btn-block"
+                                                                type="submit">Pay : $(<%= foundCart.total %>)
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                                <!--shows the payment error information-->
+                                                <div class="row" style="display:none;">
+                                                    <div class="col-xs-12">
+                                                        <p class="payment-errors"></p>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                    <!-- CREDIT CARD FORM ENDS HERE -->
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="row">
+        <div class="col-lg-2  col-md-offset-6">
+            <div class="text-center" id="loading"></div>
+        </div>
+    </div>
+</div>

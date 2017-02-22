@@ -1,0 +1,48 @@
+<% layout('layout') -%>
+
+<div class="row">
+    <div class="col-lg-6 col-md-offset-3">
+
+        <!--use email address(because email address is unique) to let only admin to add category-->
+        <% if(typeof user === 'undefined'){ %>
+        <h3>Please login first:
+            <a href="/login" class="btn btn-warnning btn-lg">Click here to login</a>
+        </h3>
+        <%} else { %>
+        <% if(user.email === 'chris1@gmail.com') {%>
+        <h3>Existing Categories:</h3>
+            <% for (i = 0; i < categories.length; i++){%>
+                <h4><%= i+1 + ':'%><%= categories[i].name %></h4>
+                <% } %>
+        <% if(message.length > 0) { %>
+        <div class="alert alert-success alert-dismissable">
+            <button type="button" class="close" data-dismmiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <%= message %>
+        </div>
+
+        <% } %>
+
+        <form method="post">
+
+            <h1>Add new products for existing category </h1>
+
+            <div class="form-group">
+                <label="name">Category Name: </label>
+                <input id="categoryName" type="text" class="form-control" name="productsName"/>
+            </div>
+
+            <button type="submit" class="btn btn-success">Submit</button>
+
+        </form>
+
+        <%} else{ %>
+
+            <h2>Only admin can add products</h2>
+
+            <%}%>
+
+        <% } %>
+
+    </div>

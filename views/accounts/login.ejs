@@ -1,0 +1,41 @@
+<% layout('layout') -%>
+
+<div class="row">
+    <div class="col-lg-6 col-md-offset-3">
+
+        <!--this part shows the error message if login fail-->
+        <% if(message.length > 0) { %>
+        <div class="alert alert-danger alert-dismissable">
+            <button type="button" class="close" data-dismmiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <%= message %>
+        </div>
+        <% } %>
+
+        <form method="post">
+
+            <h1>Login Page</h1>
+
+            <div class="form-group">
+                <label="email">Email: </label>
+                <input type="email" class="form-control" name="email"/>
+            </div>
+
+            <div class="form-group">
+                <label="name">Password: </label>
+                <input type="password" class="form-control" name="password"/>
+            </div>
+
+            <button type="submit" class="btn btn-success">Submit</button>
+
+        </form>
+
+        <br/>
+        <!--for facebook login-->
+        <a class="btn btn-block btn-social btn-facebook" href="/auth/facebook">
+            <i class="fa fa-facebook"></i> Sign in with facebook
+        </a>
+
+    </div>
+</div>

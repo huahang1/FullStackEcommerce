@@ -1,0 +1,55 @@
+<% layout('layout') -%>
+
+<div class="container">
+
+    <div class="row">
+
+        <div class="col-sm-6 col-md-4">
+            <img class="img-circle img-responsive img-center" src="<%= user.profile.picture%>" alt="">
+            <br/>
+            <p>Name: <%= user.profile.name%></p>
+            <p>Email: <%= user.email %></p>
+
+            <% if (user.address === "" || typeof user.address === 'undefined') { %>
+            <p>Address:<span style="color:#c0392b; font-weight:bold";>You have no address</span></p>
+            <%} else {%>
+            <p>Address: <%= user.address %></p>
+            <%}%>
+
+            <a href="/edit-profile" class="btn btn-primary btn-lg">Edit Profile</a>
+
+            <!--only show 'add category' button to admin-->
+            <% if(user.email === 'chris1@gmail.com') {%>
+            <hr>
+                <a href="/add-category" class="btn btn-primary btn-lg">Add category</a>
+            <hr/>
+                <a href="/add-products" class="btn btn-primary btn-lg">Add products</a>
+            <% } %>
+
+        </div>
+
+        <!--show buy history-->
+        <div class="col-md-6">
+            <h2 class="text-center">History</h2>
+
+            <table class="table table-stripped sticky-header">
+                <thead>
+                <tr>
+                    <th>Item's Name</th>
+                    <th>Paid: </th>
+                </tr>
+                <tbody>
+                <% for (var i = 0; i < user.history.length; i++){ %>
+                <tr>
+                    <td> <%= user.history[i].item.name %></td>
+                    <td> <%= user.history[i].item.price %></td>
+                </tr>
+                <% } %>
+                </tbody>
+                </thead>
+            </table>
+        </div>
+
+    </div>
+</div>
+
